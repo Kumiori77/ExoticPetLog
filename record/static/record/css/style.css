@@ -1,0 +1,48 @@
+.box {
+    border: 5px solid black;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+  }
+
+.btnIcon {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    
+}
+.addPet {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.graph_form {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/* a {
+    text-decoration: none;
+    color: black;
+}
+a:visited {
+    color: black;
+} */
+
+/* a.petLink {
+    text-decoration: none !important;
+    color: black !important;
+}
+a.petLink:visited {
+    color: black;
+} */
+
+#petForm p{
+
+    font-size: 15pt;
+
+}

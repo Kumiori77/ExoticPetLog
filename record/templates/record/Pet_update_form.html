@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<br><br>
+<div class="text-center">
+<h1>애완동물 정보 수정 & 삭제</h1>
+<br><br><br>
+<form method="post">
+    {% csrf_token %}
+
+    <div id="petForm" style="font-size:29px">
+    {{ form.as_p }}
+    </div>
+    <br>
+    <button class="btn btn-secondary" style="width:120px">수정</button>
+    <a href="{% url "record:deletePet" pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{page}}">
+        <button class="btn btn-danger" style="width:120px" type="button">삭제</button></a>
+    
+    
+<form>
+<div>
+
+{% endblock %}

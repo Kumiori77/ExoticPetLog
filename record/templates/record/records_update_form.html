@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<script>
+    {% comment %} 피딩을 입력하면 피딩한 무게도 입력하도록 하기 {% endcomment %}
+    function validateForm(event) {
+        const feeding = document.getElementById('id_feeding');
+        const feededWeight = document.getElementById('id_feededWeight');
+
+        if (feeding.value === '' || feededWeight.value === '') {
+            alert("피딩한 무게도 입력하세요");
+            event.preventDefault(); // Prevent form submission
+        }
+    }
+</script>
+
+<br><br>
+<div class="text-center">
+<h1>기록 수정</h1>
+<br><br>
+<form method="post" onsubmit="validateForm(event)">
+    {% csrf_token %}
+
+    <div id="petForm" style="font-size:18px">
+    {{ form.as_p }}
+    </div>
+    <br>
+    <button class="btn btn-secondary" style="width:150px">수정</button>
+    
+<form>
+<div>
+{% endblock %}

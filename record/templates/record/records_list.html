@@ -1,0 +1,153 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="btnIcon"> 
+    <a href="{% url "record:updatePet"  pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}"><img src="{% static "record/img/setting.png" %}" style="width:25px;padding-top:10px"></a>
+</div>
+<h1> {{ pet.name }} ({{ pet.species }}) </h1>
+
+
+
+<br>
+<div class="d-flex justify-content-end align-items-center">
+<a href="{% url "record:graph" pk=pet.id %}">
+    <button class="btn btn-secondary">그래프 보기</button></a>
+&nbsp&nbsp&nbsp&nbsp
+<a href="{% url "record:recording" pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+    <button class="btn btn-secondary">기록</button>
+</a>
+
+&nbsp&nbsp&nbsp&nbsp
+<form action="/recordList/{{pet.id}}/" id="headerForm" method="GET">
+    {% csrf_token %}
+    필터
+    <select name="filter" onchange="submitForm()">
+        <option value="none" {% if filter == "none" %} selected {% endif %}>없음</option>
+        <option value="feed" {% if filter == "feed" %} selected {% endif %}>피딩</option>
+        <option value="weight" {% if filter == "weight" %} selected {% endif %}>무게</option>
+        <option value="molting" {% if filter == "molting" %} selected {% endif %}>탈피</option>
+    </select> 
+    &nbsp&nbsp&nbsp&nbsp
+    <select name="ordering" onchange="submitForm()">
+        <option value="desc" {% if ordering == "desc" %} selected {% endif %}>최신 순</option>
+        <option value="asc" {% if ordering == "asc" %} selected {% endif %}>오래된 순</option>
+    </select> 
+    <input type="hidden" name="page" value={{pageObj.number}}> 
+</form>
+</div>
+
+<br>
+
+<table class="table table-striped">
+    <thead>  <!--   머리글   -->
+    <tr>
+      <th scope="col">날짜</th>
+      <th scope="col">무게</th>
+      <th scope="col">피딩</th>
+      <th scope="col">피딩 무게</th>
+      <th scope="col">탈피</th>
+    </tr>
+    </thead>
+
+    <tbody>  <!-- 내용  -->
+
+
+    {% for record in pageObj %}
+
+    
+    <tr>
+        <td><a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+            {{ record.date|date:'Y.m.d' }}</a></td>
+        <td>
+            <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+            {% if record.weight != None %}
+            {{ record.weight }}
+            {% else %}
+            -
+            {% endif %}
+            </a>
+        </td>
+        <td>
+            <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+            {% if record.feeding != None %}
+            {{ record.feeding }}
+            {% else %}
+            -
+            {% endif %}
+            </a>
+        </td>
+        <td>
+            <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+            {% if record.feededWeight != None %}
+            {{ record.feededWeight }}
+            {% else %}
+            -
+            {% endif %}
+            </a>
+        </td>
+        <td>
+            <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+            {% if record.molting == True %}
+            탈피
+            {% else %}
+            -
+            {% endif %}
+            </a>
+        </td>
+    </tr>
+    
+
+    {% empty %}
+    <h1>No records yet...</h1>
+
+    {% endfor %}    
+
+    </tbody>
+
+  </table>
+
+
+  <ul class="pagination h-100 justify-content-center align-items-center">
+
+    {% if startPage > 1 %}
+    <!--  이전 링크    -->
+    <li class="page-item">
+      <a class="page-link" href="?filter={{filter}}&ordering={{ordering}}&page={{beforePage}}">Previous</a>
+    </li>
+    {% endif %}
+
+    <!--  페이지 번호   -->
+    {% for page_num in pageRange %}
+    {% if pageObj.number == page_num %}
+    <li class="page-item active">
+    {% else %}
+    <li class="page-item">
+    {% endif %}
+      <a class="page-link" href="?filter={{filter}}&ordering={{ordering}}&page={{page_num}}">{{ page_num }}</a>
+    </li>
+    {% endfor %}
+
+    {% if endPage != paginator.num_pages %}
+    <!--  다음 링크    -->
+    <li class="page-item">
+      <a class="page-link" href="?filter={{filter}}&ordering={{ordering}}&page={{nextPage}}">Next</a>
+    </li>
+    {% endif %}
+
+  </ul>
+
+
+  <script th:inline="javascript">
+  
+    var searchForm = $("#headerForm");
+  
+    function submitForm() {
+      searchForm.submit();
+    }
+  
+  </script>
+
+{% endblock %}

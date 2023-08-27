@@ -1,0 +1,48 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "로그인" %}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "로그인" %}</h1>
+
+{% comment %} 소셜 로그인 {% endcomment %}
+{% comment %} {% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>{% blocktrans with site.name as site_name %}Please sign in with one
+of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+<div class="socialaccount_ballot">
+
+  <ul class="socialaccount_providers">
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  </ul>
+
+  <div class="login-or">{% trans 'or' %}</div>
+
+</div> {% endcomment %}
+
+{% comment %} {% include "socialaccount/snippets/login_extra.html" %} {% endcomment %}
+
+{% comment %} {% else %} {% endcomment %}
+<p>{% blocktrans %}아직 회원이 아니시라면 
+<a href="{{ signup_url }}">회원가입</a> 해주세요.{% endblocktrans %}</p>
+{% comment %} {% endif %} {% endcomment %}
+
+<form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  {% comment %} <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "비밀번호 찾기" %}</a> {% endcomment %}
+
+  <button class="primaryAction btn btn-secondary" type="submit">{% trans "Sign In" %}</button>
+</form>
+
+{% endblock %}

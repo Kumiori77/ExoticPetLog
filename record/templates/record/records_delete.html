@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<br><br><br><br><br>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="text-center">
+    <h2>{{ object.date|date:'Y.m.d' }}의 기록을 <br>삭제하시겠습니까? </h2>
+    <br>
+    {% comment %} <h3>{{ object.date }}에 대한 데이터 모두 삭제됩니다.</h3> {% endcomment %}
+    {{ form }} 
+
+    <br><br><br>
+        <button style="width:100px" class="btn btn-warning" type="button" onclick="goBack()">취소</button>
+    &nbsp&nbsp
+    <button style="width:100px" class="btn btn-danger" type="submit">삭제</button>
+    </div>
+</form>
+
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+
+{% endblock %}

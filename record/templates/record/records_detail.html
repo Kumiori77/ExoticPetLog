@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<br><br><br>
+
+<div style="margin-left:30px">
+<h3>날짜 : {{ object.date|date:'Y.m.d' }}</h3>
+<h3>무게 : {{ object.weight }}</h3>
+<h3>피딩 : {{ object.feeding }}</h3>
+<h3>피딩무게 : {{ object.feededWeight }}</h3>
+
+<h3>탈피 : {{ object.molting }}</h3>
+</div>
+
+<br><br>
+
+
+<div class="text-center">
+<a href="{% url "record:updateRecord" pk=object.id%}?filter={{filter}}&ordering={{ordering}}&page={{page}}">
+    <botton class="btn btn-secondary" style="width:120px">수정</button>
+</a>
+&nbsp&nbsp&nbsp
+<a href="{% url "record:deleteRecord" pk=object.id%}?filter={{filter}}&ordering={{ordering}}&page={{page}}">
+    <botton class="btn btn-danger" style="width:120px">삭제</button>
+</a>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<script>
+    {% comment %} 피딩을 입력하지 않으면 피딩 무게를 입력하지 못하도록 하기 {% endcomment %}
+    function checkField1() {
+        const feeding = document.getElementById('id_feeding');
+        const feededWeight = document.getElementById('id_feededWeight');
+
+        if (feeding.value === '') {
+            feededWeight.disabled = true;
+        } else {
+            feededWeight.disabled = false;
+        }
+    }
+    {% comment %} 피딩을 입력했으면 피딩 무게도 입력하도록 하기 {% endcomment %}
+    function validateForm(event) {
+        const feeding = document.getElementById('id_feeding');
+        const feededWeight = document.getElementById('id_feededWeight');
+
+        if (feeding.value === '' || feededWeight.value === '') {
+            alert("피딩한 무게도 입력하세요");
+            event.preventDefault(); // Prevent form submission
+        }
+    }
+</script>
+
+
+<br><br>
+<div class="text-center">
+<h1>기록</h1>
+<br><br>
+<form method="post" onsubmit="validateForm(event)">
+    {% csrf_token %}
+
+    <div id="petForm" style="font-size:18px">
+    {{ form.as_p }}
+    </div>
+    <br>
+    <button class="btn btn-secondary" style="width:150px">기록</button>
+    
+<form>
+<div>
+
+<script>
+    {% comment %}  필드의 속성 지정하기 {% endcomment %}
+    const feeding = document.getElementById('id_feeding');
+    const feededWeight = document.getElementById('id_feededWeight');
+    feeding.setAttribute('oninput', 'checkField1()');
+    feededWeight.setAttribute('disabled', 'disabled');
+</script>
+
+{% endblock %}

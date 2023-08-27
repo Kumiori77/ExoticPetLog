@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block header %}
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+<script>
+ 
+  window.onload = function () {
+    // 파라미터로 전달된 데터 받아오기
+    const data = JSON.parse('{{data|escapejs}}');
+    const value = "{{value|escapejs}}"
+
+    var dataList = []; // 그래프에 표시할 데이터
+
+    for (var i = 0; i < data.length; i++) {
+
+      if (value == "Feeding"){
+        dataList.push({
+          x: new Date(data[i].fields.date),
+          y: parseFloat(data[i].fields.feededWeight)
+          });
+      }
+      else {
+        dataList.push({
+          x: new Date(data[i].fields.date),
+          y: parseFloat(data[i].fields.weight)
+          });
+      }
+      
+    }
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+      animationEnabled: true,
+      theme: "light2",
+      title:{
+        text: value
+      },
+      axisX:{
+        valueFormatString: "YYYY.MM.DD",
+        crosshair: {
+          enabled: true,
+          snapToDataPoint: true
+        }
+      },
+      data: [{        
+        type: "line",
+            indexLabelFontSize: 16,
+            markerType: "square",
+        dataPoints: dataList
+      }]
+    });
+    chart.render();
+    
+    }
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<br><br>
+
+<div id="chartContainer" style="height: 580px; width: 100%;"></div>
+
+<br>
+
+<div class="graph_form">
+<form action="{% url "record:graph" pk=pk %}" id="headerForm" method="GET">
+
+    {% csrf_token %}
+    <label>
+    무게 <input type="radio" name="value" value="Weight" onchange="submitForm()" 
+    {% if value == "Weight" %} checked {% endif %}>
+    </label>
+    &nbsp&nbsp
+    <label>
+    피딩 <input type="radio" name="value" value="Feeding" onchange="submitForm()"
+    {% if value == "Feeding" %} checked {% endif %}>
+    </label>
+
+</form></div>
+
+
+<script>
+    function submitForm() {
+      document.getElementById("headerForm").submit();
+    }
+</script>
+
+
+{% endblock %}

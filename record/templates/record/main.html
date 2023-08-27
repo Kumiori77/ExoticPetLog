@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="text-center mt-5"> 
+    <h1>이색 애완동물 성장일지</h1>
+</div>
+
+<br>
+{% if user.is_authenticated%}
+<h4><a class="nav-link" href="{% url "account_logout" %}">user : {{user.get_username}}</a></h4>
+
+{% else %}
+
+<h6><a class="nav-link" href="{% url "account_login" %}">로그인 / 회원가입</a><h6>
+
+{% endif %}
+
+<br>
+<div class="box mt-3">
+<h2>Pet</h2>
+
+{% if user.is_authenticated %}
+<ul>
+
+{% for pet in pets %}
+
+<h5><li><a class="nav-link" href="/recordList/{{pet.id}}">{{pet.name}} ({{ pet.species }})</a></li></h5>
+
+{% endfor %}
+{% endif %} 
+
+</ul>
+
+</div><br>
+
+<div class="btnIcon"> 
+    <a href="{% url "record:addPet" %}"><img src="{% static "record/img/plus4.png" %}" style="width:50px"></a>
+</div>
+{% endblock %}
