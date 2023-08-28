@@ -13,6 +13,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import my_settings
+from django.core.exceptions import ImproperlyConfigured
+
+
+# 베포 위해추가
+# 환경변수 받아오는 함수
+def get_env_variable(var_name):
+  try:
+    return os.environ[var_name]
+  except KeyError:
+    error_msg = 'Set the {} environment variable'.format(var_name)
+    raise ImproperlyConfigured(error_msg)
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +35,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = my_settings.SECRET_KEY
+# 로컬 테스트용
+# SECRET_KEY = my_settings.SECRET_KEY
+# 베포용
+SECRET_KEY = get_env_variable("DJANGO_SECRET")
+
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True # 개발용
+DEBUG = False # 베포용
 
 ALLOWED_HOSTS = ["*"]
+
+
+# 베포 위해 추가
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -44,9 +68,13 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    # 베포 위해 추가
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    # 베포 위해 추가
+    'corsheaders.middleware.CorsMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +82,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 베포 위해 추가
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'ExoticPetLog.urls'
@@ -81,8 +111,19 @@ WSGI_APPLICATION = 'ExoticPetLog.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = my_settings.DATABASES
+# 로컬 테스트 용
+# DATABASES = my_settings.DATABASES
+# 베포용
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': get_env_variable('DATABASE'), 
+        'USER': get_env_variable('DB_USER'),                    
+        'PASSWORD': get_env_variable('DB_PW'),        
+        'HOST': get_env_variable('DB_HOST'),          
+        'PORT': get_env_variable('DB_PORT'),
+    }
+}
 
 
 # Password validation
@@ -120,6 +161,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# 베포 위해 추가 (static) 모으기
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
