@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-import my_settings
+# 로컬 테스트 용
+# import my_settings 
 from django.core.exceptions import ImproperlyConfigured
 
 
