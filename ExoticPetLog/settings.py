@@ -55,6 +55,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 
+# 베포 위해 추가 (csrf 방지)
+CSRF_TRUSTED_ORIGINS =["https://port-0-exoticpetlog-ixj2mllkg7wiz.sel3.cloudtype.app"]
+
+
 # Application definition
 
 INSTALLED_APPS = [
