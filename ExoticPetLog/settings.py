@@ -44,8 +44,8 @@ SECRET_KEY = get_env_variable("DJANGO_SECRET")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # 개발용
-# DEBUG = False # 베포용
+# DEBUG = True # 개발용
+DEBUG = False # 베포용
 
 ALLOWED_HOSTS = ["*"]
 
