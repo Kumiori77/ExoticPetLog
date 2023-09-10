@@ -14,13 +14,13 @@
 <br>
 <div class="d-flex justify-content-end align-items-center">
 <a href="{% url "record:graph" pk=pet.id %}">
-    <button class="btn btn-secondary">그래프 보기</button></a>
+    <button class="btn btn-secondary">그래프</button></a>
 &nbsp&nbsp&nbsp&nbsp
 <a href="{% url "record:recording" pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
     <button class="btn btn-secondary">기록</button>
 </a>
 
-&nbsp&nbsp&nbsp&nbsp
+&nbsp&nbsp
 <form action="/recordList/{{pet.id}}/" id="headerForm" method="GET">
     {% csrf_token %}
     필터
@@ -30,7 +30,7 @@
         <option value="weight" {% if filter == "weight" %} selected {% endif %}>무게</option>
         <option value="molting" {% if filter == "molting" %} selected {% endif %}>탈피</option>
     </select> 
-    &nbsp&nbsp&nbsp&nbsp
+    &nbsp&nbsp
     <select name="ordering" onchange="submitForm()">
         <option value="desc" {% if ordering == "desc" %} selected {% endif %}>최신 순</option>
         <option value="asc" {% if ordering == "asc" %} selected {% endif %}>오래된 순</option>

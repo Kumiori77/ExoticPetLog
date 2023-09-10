@@ -21,8 +21,9 @@ class RecordForm(forms.ModelForm):
         fields = ["weight", "feeding", "feededWeight", "molting"]
 
         labels = {
-            "weight":"무게(g) ",
-            "feeding":"피딩 (먹이 종류) ",
-            "feededWeight":"피딩 무게(g) ",
-            "molting":"탈피 여부 ",
+            "weight":"무게(g)",
+            "feeding":"피딩 (먹이 종류)",
+            "feededWeight":"피딩 무게(g)",
+            "molting":"탈피 여부",
         }
+        label_suffix = ''  # 콜론(:) 제외
