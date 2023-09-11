@@ -19,7 +19,7 @@
         const feeding = document.getElementById('id_feeding');
         const feededWeight = document.getElementById('id_feededWeight');
 
-        if (feeding.value === '' || feededWeight.value === '') {
+        if (feeding.value != '' && feededWeight.value === '') {
             alert("피딩한 무게도 입력하세요");
             event.preventDefault(); // Prevent form submission
         }
