@@ -317,7 +317,7 @@ class GraphView(LoginRequiredMixin, TemplateView):
 
         # 그래프에 표시할 데이터]
 
-        if value == "feeding":
+        if value == "Feeding":
             q = Q(petId_id=self.kwargs["pk"], feededWeight__isnull=False)
         else:
             q = Q(petId_id=self.kwargs["pk"], weight__isnull=False)
