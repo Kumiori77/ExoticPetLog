@@ -5,11 +5,18 @@
 
 <div style="margin-left:30px">
 <h3>날짜 : {{ object.date|date:'Y.m.d' }}</h3>
-<h3>무게 : {{ object.weight }}</h3>
-<h3>피딩 : {{ object.feeding }}</h3>
-<h3>피딩무게 : {{ object.feededWeight }}</h3>
+<h3>무게 : {% if object.weight %}{{ object.weight }}{% else %}-{% endif %}</h3>
+<h3>피딩 : {% if object.feeding %}{{ object.feeding }}{% else %}-{% endif %}</h3>
+<h3>피딩무게 : {% if object.feedingWeight %}{{ object.feedingWeight }}{% else %}-{% endif %}</h3>
 
-<h3>탈피 : {{ object.molting }}</h3>
+<h3>탈피 : {% if object.molting %}Yes{% else %}No{% endif %}</h3>
+
+{% if object.image %}
+<div class="image_box">
+    <img class="image" src="{{ object.image.url }}">
+</div>
+{% endif %}
+
 </div>
 
 <br><br>
@@ -24,4 +31,5 @@
     <botton class="btn btn-danger" style="width:120px">삭제</button>
 </a>
 </div>
+<br><br>
 {% endblock %}

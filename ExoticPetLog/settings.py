@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-# 로컬 테스트 용
-# import my_settings 
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -175,6 +173,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# 유저가 미디어 파일 업로드 위해 추가
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
 # 인증 위해 추가
 
 AUTHENTICATION_BACKENDS = [   
@@ -332,6 +335,12 @@ LOGIN_REDIRECT_URL = "/"
 # STATIC_URL = '/static/'
 # # 베포 위해 추가 (static) 모으기
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+
+# # 유저가 미디어 파일 업로드 위해 추가
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 # # Default primary key field type
 # # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

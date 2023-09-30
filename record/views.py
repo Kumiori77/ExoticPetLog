@@ -75,6 +75,7 @@ class RecordListView(LoginRequiredMixin, ListView):
         ordering = self.request.GET.get("ordering")
         filtering= self.request.GET.get("filter")
 
+        a = Q() # 이미지 조건 확인을 위한 조건
         if filtering is not None:
             if filtering == "feed":
                 q = Q(petId_id=petID, feeding__isnull=False)
@@ -82,6 +83,10 @@ class RecordListView(LoginRequiredMixin, ListView):
                 q = Q(petId_id=petID, weight__isnull=False)
             elif filtering == "molting":
                 q = Q(petId_id=petID, molting=True)
+            elif filtering == "image":
+                a = ~Q(image__exact='')
+                q = Q(petId_id=petID, image__isnull=False)
+                
             else :
                 q = Q(petId_id=petID)
         else :
@@ -89,11 +94,11 @@ class RecordListView(LoginRequiredMixin, ListView):
 
         if ordering is not None:
             if ordering == "asc":
-                queryset = models.Records.objects.filter(q).order_by("id")    
+                queryset = models.Records.objects.filter(q, a).order_by("id")    
             else:
-                queryset = models.Records.objects.filter(q).order_by("-id")
+                queryset = models.Records.objects.filter(q, a).order_by("-id")
         else :
-            queryset = models.Records.objects.filter(q).order_by("-id")
+            queryset = models.Records.objects.filter(q, a).order_by("-id")
 
         return queryset
 

@@ -29,6 +29,7 @@
         <option value="feed" {% if filter == "feed" %} selected {% endif %}>피딩</option>
         <option value="weight" {% if filter == "weight" %} selected {% endif %}>무게</option>
         <option value="molting" {% if filter == "molting" %} selected {% endif %}>탈피</option>
+        <option value="image" {% if filter == "image" %} selected {% endif %}>사진</option>
     </select> 
     &nbsp&nbsp
     <select name="ordering" onchange="submitForm()">
@@ -41,7 +42,7 @@
 
 <br>
 
-<table class="table table-striped">
+<table  style="font-size:11pt" class="table table-striped">
     <thead>  <!--   머리글   -->
     <tr>
       <th scope="col">날짜</th>
@@ -49,6 +50,7 @@
       <th scope="col">피딩</th>
       <th scope="col">피딩 무게</th>
       <th scope="col">탈피</th>
+      <th scope="col">사진</th>
     </tr>
     </thead>
 
@@ -60,7 +62,7 @@
     
     <tr>
         <td><a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
-            {{ record.date|date:'Y.m.d' }}</a></td>
+            {{ record.date|date:'y.m.d' }}</a></td>
         <td>
             <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
             {% if record.weight != None %}
@@ -97,6 +99,17 @@
             {% endif %}
             </a>
         </td>
+
+        <td>
+          <a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+          {% if record.image %}
+          사진
+          {% else %}
+          -
+          {% endif %}
+          </a>
+      </td>
+
     </tr>
     
 

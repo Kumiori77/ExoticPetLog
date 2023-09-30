@@ -18,12 +18,13 @@ class RecordForm(forms.ModelForm):
     class Meta:
         model = models.Records
 
-        fields = ["weight", "feeding", "feededWeight", "molting"]
+        fields = ["weight", "feeding", "feededWeight", "molting", "image"]
 
         labels = {
             "weight":"무게(g)",
             "feeding":"피딩 (먹이 종류)",
             "feededWeight":"피딩 무게(g)",
             "molting":"탈피 여부",
+            "image":"사진"
         }
         label_suffix = ''  # 콜론(:) 제외

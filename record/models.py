@@ -20,3 +20,4 @@ class Records(models.Model):
     feeding = models.CharField(null=True, blank=True, max_length=100)
     feededWeight = models.DecimalField(null=True, blank=True, max_digits=6, decimal_places=2)
     molting = models.BooleanField(default=False)
+    image = models.ImageField(upload_to="record", blank=True)

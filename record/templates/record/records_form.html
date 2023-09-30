@@ -31,25 +31,25 @@
 <div class="text-center">
 <h1>기록</h1>
 <br><br>
-<form method="post" onsubmit="validateForm(event)">
+<form method="post" onsubmit="validateForm(event)" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div id="petForm" style="font-size:18px">
     {% for field in  form %}
     
     <p>
-    <labrel>{{ field.label_tag|cut:":" }}</label><br>
+    <labrel style="font-size:12pt"><b>{{ field.label_tag|cut:":" }}</b></label><br>
     {{field }}<br>
     </p>
 
     {% endfor %}
     </div>
     <br>
-    <button class="btn btn-secondary" style="width:150px;height:60px;font-size:20px">기록</button>
+    <button class="btn btn-secondary" style="width:130px;height:45px;font-size:17px">기록</button>
     
 <form>
 <div>
-
+<br><br>
 <script>
     {% comment %}  필드의 속성 지정하기 {% endcomment %}
     const feeding = document.getElementById('id_feeding');

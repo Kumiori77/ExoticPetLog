@@ -52,3 +52,9 @@ a.petLink:visited {
     font-size: 15pt;
 
 }
+
+.image {
+    width: 90%;
+    height: auto;
+}
+
