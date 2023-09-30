@@ -41,8 +41,20 @@ a.petLink:visited {
     color: black;
 } */
 
+/* #petForm {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-start; 
+    align-items: center;
+} */
 #petForm p{
 
     font-size: 15pt;
 
 }
+
+.image {
+    width: 90%;
+    height: auto;
+}
+
