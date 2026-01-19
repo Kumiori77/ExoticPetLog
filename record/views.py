@@ -338,5 +338,108 @@ class GraphView(LoginRequiredMixin, TemplateView):
     
     
 
+# 모아보기 페이지
+# 기록 리스트
+class CollectListView(LoginRequiredMixin, ListView):
+    model = models.Records
+    template_name = 'record/records_collectList.html'
+
+    # 유저의 애완동물 목록 받아오기
+    def get_pet_list(self) :
+        petList = models.Pet.objects.filter(userID=self.request.user)
+
+        return petList
+
+    #  이제 애완동물 이름및 종류만 표시하면 됨 근데 어떻게 하지..?
+
+
+    # 쿼리셋 지정
+    def get_queryset(self) :
+        petList = self.get_pet_list()
+
+        ordering = self.request.GET.get("ordering")
+        filtering = self.request.GET.get("filter")
+
+        a = Q() # 이미지 조건 확인을 위한 조건
+        if filtering is not None:
+            if filtering == "feed":
+                q = Q(petId_id__in = petList, feeding__isnull=False)
+            elif filtering == "weight":
+                q = Q(petId_id__in = petList, weight__isnull=False)
+            elif filtering == "molting":
+                q = Q(petId_id__in = petList, molting=True)
+            elif filtering == "image":
+                a = ~Q(image__exact='')
+                q = Q(petId_id__in = petList, image__isnull=False)
+                
+            else :
+                q = Q(petId_id__in = petList, molting=True)
+        else :
+            q = Q(petId_id__in = petList, molting=True)
+
+        if ordering is not None:
+            if ordering == "asc":
+                queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("id")    
+            else:
+                queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("-id")
+        else :
+            queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("-id")
+
+        return queryset
+
+    # 추가로 전달할 파라미터 지정
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # #  URL로 전달된 매개변수를 가져옴
+        # petID = self.kwargs['petID']
+
+        # # ID를 사용하여 인스턴스를 가져옴
+        # pet = models.Pet.objects.get(id=petID)
+        # # 추가로 전달할 파라미터 지정
+        # context["pet"] = pet
+
+        # 정렬 방식
+        ordering = self.request.GET.get("ordering")
+        context["ordering"] = ordering
+
+        # 필터
+        filtering = self.request.GET.get("filter")
+        context["filter"] = filtering
+
+
+        # 페이징
+        # 페이지 번호
+        page = self.request.GET.get("page")
+        
+        # 페이징 객체
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, 10)
+        context["paginator"] = paginator
+
+        # 페이지 번호 예외처리
+        if page == None:
+            page = 1
+        elif int(page) > paginator.num_pages:
+            page = paginator.num_pages
+        
+        # 페이징 처리된 객체들
+        pageObj = paginator.page(page)
+        context["pageObj"] = pageObj
+
+        # 표시할 페이지 레인지
+        startPage = ((int(page)-1) // 5) * 5 + 1
+        endPage = (((int(page)-1) // 5) + 1) * 5
+        if endPage > paginator.num_pages:
+            endPage = paginator.num_pages
+        pageRange = range(startPage, endPage+1) 
+        context["pageRange"] = pageRange
+        context["startPage"] = startPage
+        context["beforePage"] = startPage-1
+        context["endPage"] = endPage
+        context["nextPage"] = endPage+1
+
+        return context
+
 
 

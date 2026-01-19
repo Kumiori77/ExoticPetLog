@@ -11,6 +11,7 @@
 <br>
 {% if user.is_authenticated%}
 <h4><a class="nav-link" href="{% url "account_logout" %}">user : {{user.get_username}}</a></h4>
+<h5><a class="nav-link" href="{% url "record:collectList" %}">모아보기</a></h5>
 
 {% else %}
 

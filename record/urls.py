@@ -21,6 +21,8 @@ urlpatterns = [
     path("deleteRecord/<int:pk>/", views.DeleteRecordView.as_view(), name="deleteRecord"),
     path("updateRecord/<int:pk>/", views.UpdateRecordView.as_view(), name="updateRecord"),
     path("graph/<int:pk>/", views.GraphView.as_view(), name="graph"),
+    path("collectList", views.CollectListView.as_view(), name="collectList"),
+    # 메포해서 유저가 업로드 한 파일을 처리하기 위해 추가
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root" : settings.MEDIA_ROOT})
 ]
 
