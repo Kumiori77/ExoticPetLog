@@ -58,13 +58,13 @@
 
     
     <tr>
-        <td><a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+        <td><a class="nav-link" href="/recordList/{{record.petId.id}}">
             {{ record.petId.name }}</a></td>
         
-        <td><a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+        <td><a class="nav-link" href="/recordList/{{record.petId.id}}">
             {{ record.petId.species }}</a></td>
         
-        <td><a class="nav-link" href="{% url "record:detailRecord" pk=record.id%}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}">
+        <td><a class="nav-link" href="/recordList/{{record.petId.id}}">
             {{ record.date|date:'y.m.d' }}</a></td>
         
         {% if filter == 'weight' %}
