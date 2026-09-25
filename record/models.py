@@ -12,6 +12,7 @@ class Pet(models.Model):
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     species = models.CharField(max_length=200)
+    isBeingReared = models.BooleanField(default=True) # 사육중
 
 class Records(models.Model):
     petId = models.ForeignKey(Pet, on_delete=models.CASCADE)

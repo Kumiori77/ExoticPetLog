@@ -8,6 +8,7 @@
     <a href="{% url "record:updatePet"  pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}"><img src="{% static "record/img/setting.png" %}" style="width:25px;padding-top:10px"></a>
 </div>
 <h1> {{ pet.name }} ({{ pet.species }}) </h1>
+{% if pet.isBeingReared == False %} <h3>-사육종료-</h3> {% endif %}
 
 
 

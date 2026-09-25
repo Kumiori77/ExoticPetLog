@@ -6,11 +6,12 @@ class AddPetForm(forms.ModelForm):
     class Meta:
         model = models.Pet
 
-        fields = ["name", "species"]
+        fields = ["name", "species", "isBeingReared"]
 
         labels = {
             "name":"이름 ",
-            "species":"종류 "
+            "species":"종류 ",
+            "isBeingReared":"사육중"
         }
 
 # 기록 폼

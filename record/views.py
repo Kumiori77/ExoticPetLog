@@ -34,9 +34,21 @@ class MainView(TemplateView):
             # 해당 유저 인스턴스
             user = models.User.objects.get(username__contains=loginedUsername)
 
-            # 해당 유저의 애완동물
-            pets = user.pet_set.all() 
+            # 사육중 여부 표시 여부
+            isBeingReared = self.request.GET.get("rearing")
+            print("사육중")
+            print(isBeingReared)
+
+            # 해당 유저의 애완동물 (사육중 표시 여부에 따라 표시)
+            if isBeingReared == "true":
+                pets = user.pet_set.filter(isBeingReared=True)          
+            elif isBeingReared == "false":
+                pets = user.pet_set.filter(isBeingReared=False)          
+            else : 
+                pets = user.pet_set.all()
+
             context["pets"] = pets
+            context["rearing"] = isBeingReared # 사육중 여부 표시 여부
             return context
         
 # 애완동물 추가 페이지

@@ -20,6 +20,18 @@
 {% endif %}
 
 <br>
+<form action="/" id="headerForm" method="GET">
+    {% csrf_token %}
+
+    <select name="rearing" onchange="submitForm()">
+        <option value="total" {% if rearing == "tital" %} selected {% endif %}>전체</option>
+        <option value="true" {% if rearing == "true" %} selected {% endif %}>사육중</option>
+        <option value="false" {% if rearing == "false" %} selected {% endif %}>사육종료</option>
+    </select>
+</form>
+
+
+<br>
 <div class="box mt-3">
 <h2>Pet</h2>
 
@@ -40,4 +52,16 @@
 <div class="btnIcon"> 
     <a href="{% url "record:addPet" %}"><img src="{% static "record/img/plus4.png" %}" style="width:50px"></a>
 </div>
+
+
+{% comment %} 폼 제줄 {% endcomment %}
+<script th:inline="javascript">
+  
+    var searchForm = $("#headerForm");
+  
+    function submitForm() {
+      searchForm.submit();
+    }
+  
+</script>
 {% endblock %}
