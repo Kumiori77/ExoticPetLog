@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<br><br>
+<div class="text-center">
+<h1>관리</h1>
+<br><br>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div id="petForm" style="font-size:29px">
+
+    <h2>{{ object.petId.name }}</h2>
+    <h2>({{ object.petId.species }})</h2>
+
+    <br>
+
+    {{ form.as_p }}
+    </div>
+    <br>
+    <button class="btn btn-secondary" style="width:150px">등록</button>
+    
+<form>
+<div>
+
+{% endblock %}

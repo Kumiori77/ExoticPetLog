@@ -1,3 +1,7 @@
+
+
+from django.utils import timezone
+
 from django import forms
 from . import models
 
@@ -29,3 +33,33 @@ class RecordForm(forms.ModelForm):
             "image":"사진"
         }
         label_suffix = ''  # 콜론(:) 제외
+
+# 대시보드 폼
+class DashboardForm(forms.ModelForm):
+    date = forms.DateField(
+        initial=timezone.localdate,
+        widget=forms.DateInput(
+            format="%Y-%m-%d",
+            attrs={"type": "date"}
+        )
+    )
+
+
+    class Meta:
+        model = models.Dashboard
+
+        fields = ["date", "state"]
+
+        labels = {
+            "date":"날짜",
+            "state":"상태",
+        }
+
+        label_suffix = ''  # 콜론(:) 제외
+
+        widgets = {
+            'date': forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={'type': 'date'}
+            )
+        }

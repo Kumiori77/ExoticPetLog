@@ -16,6 +16,7 @@ from django.core.paginator import Paginator
 from . import pageRequest
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
 
 class MainView(TemplateView):
@@ -41,13 +42,20 @@ class MainView(TemplateView):
 
             # 해당 유저의 애완동물 (사육중 표시 여부에 따라 표시)
             if isBeingReared == "true":
-                pets = user.pet_set.filter(isBeingReared=True)          
+                pets = user.pet_set.filter(isBeingReared=True)
+                cnt = user.pet_set.filter(isBeingReared=True).count()
             elif isBeingReared == "false":
-                pets = user.pet_set.filter(isBeingReared=False)          
+                pets = user.pet_set.filter(isBeingReared=False)
+                cnt = user.pet_set.filter(isBeingReared=True).count() 
             else : 
                 pets = user.pet_set.all()
+                # cnt = user.pet_set.all().count()
+                cnt = pets.count()
 
+
+            print(cnt)
             context["pets"] = pets
+            context["petsCnt"] = cnt
             context["rearing"] = isBeingReared # 사육중 여부 표시 여부
             return context
         
@@ -351,7 +359,6 @@ class GraphView(LoginRequiredMixin, TemplateView):
     
 
 # 모아보기 페이지
-# 기록 리스트
 class CollectListView(LoginRequiredMixin, ListView):
     model = models.Records
     template_name = 'record/records_collectList.html'
@@ -454,4 +461,236 @@ class CollectListView(LoginRequiredMixin, ListView):
         return context
 
 
+# 모아보기 페이지
+class CollectListView(LoginRequiredMixin, ListView):
+    model = models.Records
+    template_name = 'record/records_collectList.html'
 
+    # 유저의 애완동물 목록 받아오기
+    def get_pet_list(self) :
+        petList = models.Pet.objects.filter(userID=self.request.user)
+
+        return petList
+
+    #  이제 애완동물 이름및 종류만 표시하면 됨 근데 어떻게 하지..?
+
+
+    # 쿼리셋 지정
+    def get_queryset(self) :
+        petList = self.get_pet_list()
+
+        ordering = self.request.GET.get("ordering")
+        filtering = self.request.GET.get("filter")
+
+        a = Q() # 이미지 조건 확인을 위한 조건
+        if filtering is not None:
+            if filtering == "feed":
+                q = Q(petId_id__in = petList, feeding__isnull=False)
+            elif filtering == "weight":
+                q = Q(petId_id__in = petList, weight__isnull=False)
+            elif filtering == "molting":
+                q = Q(petId_id__in = petList, molting=True)
+            elif filtering == "image":
+                a = ~Q(image__exact='')
+                q = Q(petId_id__in = petList, image__isnull=False)
+                
+            else :
+                q = Q(petId_id__in = petList, molting=True)
+        else :
+            q = Q(petId_id__in = petList, molting=True)
+
+        if ordering is not None:
+            if ordering == "asc":
+                queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("id")    
+            else:
+                queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("-id")
+        else :
+            queryset = models.Records.objects.select_related("petId").filter(q, a).order_by("-id")
+
+        return queryset
+
+    # 추가로 전달할 파라미터 지정
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # #  URL로 전달된 매개변수를 가져옴
+        # petID = self.kwargs['petID']
+
+        # # ID를 사용하여 인스턴스를 가져옴
+        # pet = models.Pet.objects.get(id=petID)
+        # # 추가로 전달할 파라미터 지정
+        # context["pet"] = pet
+
+        # 정렬 방식
+        ordering = self.request.GET.get("ordering")
+        context["ordering"] = ordering
+
+        # 필터
+        filtering = self.request.GET.get("filter")
+        context["filter"] = filtering
+
+
+        # 페이징
+        # 페이지 번호
+        page = self.request.GET.get("page")
+        
+        # 페이징 객체
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, 10)
+        context["paginator"] = paginator
+
+        # 페이지 번호 예외처리
+        if page == None:
+            page = 1
+        elif int(page) > paginator.num_pages:
+            page = paginator.num_pages
+        
+        # 페이징 처리된 객체들
+        pageObj = paginator.page(page)
+        context["pageObj"] = pageObj
+
+        # 표시할 페이지 레인지
+        startPage = ((int(page)-1) // 5) * 5 + 1
+        endPage = (((int(page)-1) // 5) + 1) * 5
+        if endPage > paginator.num_pages:
+            endPage = paginator.num_pages
+        pageRange = range(startPage, endPage+1) 
+        context["pageRange"] = pageRange
+        context["startPage"] = startPage
+        context["beforePage"] = startPage-1
+        context["endPage"] = endPage
+        context["nextPage"] = endPage+1
+
+        return context
+
+
+# 대시보드 페이지
+class DashboardView(LoginRequiredMixin, ListView):
+    model = models.Dashboard
+    template_name = 'record/dashboard.html'
+
+    # 유저의 애완동물 목록 받아오기
+    def get_data_list(self) :
+        filtering = self.request.GET.get("filter")
+
+        
+        if filtering == "feed":
+            dataList = models.Dashboard.objects.filter(userID=self.request.user,  state=models.Dashboard.Type.FEED)
+        elif filtering == "waitFeed":
+            dataList = models.Dashboard.objects.filter(userID=self.request.user,  state=models.Dashboard.Type.WAIT_FEED)
+        elif filtering == "dontFeed":
+            dataList = models.Dashboard.objects.filter(userID=self.request.user,  state=models.Dashboard.Type.DONT_FEED)
+        elif filtering == "noRecord":
+            dataList = models.Dashboard.objects.filter(userID=self.request.user,  state=models.Dashboard.Type.NONE)
+        else:
+            dataList = models.Dashboard.objects.filter(userID=self.request.user)
+
+        return dataList
+
+    # 추가로 전달할 파라미터 지정
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["filter"] = self.request.GET.get("filter")
+        context["datas"] = self.get_data_list()
+
+        return context
+
+
+# 대시보드 관리 리스트 등록 페이지
+class DashboardPetListView(LoginRequiredMixin, ListView):
+    model = models.Pet
+    # modelDashboard = models.Dashboard
+    template_name = 'record/dashboard_petList.html'
+
+    # 유저의 애완동물 목록 받아오기
+    def get_pet_list(self) :
+        petList = models.Pet.objects.filter(userID=self.request.user, isBeingReared=True)
+
+        return petList
+
+    # 이미 대시모드에 등록된 목록 받아오기
+    def get_joined_pet(self) :
+        dataList = list(models.Dashboard.objects.filter(userID=self.request.user).values_list('petId', flat=True))
+
+        # print(dataList)
+
+        return dataList
+
+    # 추가로 전달할 파라미터 지정
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["petList"] = self.get_pet_list()
+        context["joinedPet"] = self.get_joined_pet()
+
+        return context
+
+    # 포스트 요청 처리
+    def post(self, request, *args, **kwargs):
+
+        # 체크된 체크박스의 pet.id들을 가져옴
+        checked_pets = request.POST.getlist("pcheckedPets")
+        print("checked in html")
+        print(checked_pets)
+
+        oldJoinedList = self.get_joined_pet()
+
+        print("old list")
+        print(oldJoinedList)
+
+        # 체크한 애완동물 추가
+        for pet_id in checked_pets:
+            print(pet_id)
+            if int(pet_id) not in oldJoinedList:
+
+                models.Dashboard.objects.create(
+                    userID=request.user,
+                    petId_id=pet_id,
+                    date=timezone.now()
+                )
+
+        # 체크 안한 애완동물 삭제
+        for old in oldJoinedList:
+            if str(old) not in checked_pets:
+                models.Dashboard.objects.filter(petId=old).delete()
+                
+            
+
+        return redirect("record:dashboard")
+
+# 관리 상태 입력 페이지
+class DashboardFormView(LoginRequiredMixin, UpdateView):
+    template_name = 'record/dashboardForm.html'
+    model = models.Dashboard # 연결할 모델 클래스
+
+    # 커스텀 폼 클래스
+    form_class = forms.DashboardForm
+
+
+    def get_success_url(self):
+            # 요청 성공 후 이동할 페이지, 필터 정보를 포함한 URL을 반환
+    
+            filtering = self.request.GET.get("filter")
+    
+            success_url = reverse_lazy("record:dashboard") + "?filter=" + filtering
+    
+            return success_url
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+
+        # GET 요청일 때만 화면에 표시되는 날짜를 오늘로 변경
+        if self.request.method == "GET":
+            form.initial["date"] = timezone.localdate()
+
+        return form
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+
+    #     context[""] = models.Pet.objects.filter(
+    #         user=self.request.user
+    #     )
+
+    #     return context

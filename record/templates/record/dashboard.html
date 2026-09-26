@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<br>
+
+<h1> 대시보드 </h1>
+
+<div class="btnIcon"> 
+    {% comment %} <a href="{% url "record:updatePet"  pk=pet.id %}?filter={{filter}}&ordering={{ordering}}&page={{pageObj.number}}"><img src="{% static "record/img/plu4.png" %}" style="width:25px;padding-top:10px"></a> {% endcomment %}
+    {% comment %} <a href="dashboardPetList"><img src="{% static "record/img/plus4.png" %}" style="width:25px;padding-top:10px"></a> {% endcomment %}
+    <a href="{% url "record:dashboardPetList" %}?filter={{filter}}"><img src="{% static "record/img/plus4.png" %}" style="width:25px;padding-top:10px"></a>
+</div>
+
+<br>
+<form action="/dashboard" id="headerForm" method="GET">
+    {% csrf_token %}
+    필터
+    <select name="filter" onchange="submitForm()">
+        {% comment %} <option value="none" {% if filter == "none" %} selected {% endif %}>없음</option> {% endcomment %}
+        <option value="none" {% if filter == "none" %} selected {% endif %}>없음</option>
+        <option value="feed" {% if filter == "feed" %} selected {% endif %}>피딩</option>
+        <option value="waitFeed" {% if filter == "waitFeed" %} selected {% endif %}>피딩 대기</option>
+        <option value="dontFeed" {% if filter == "dontFeed" %} selected {% endif %}>피딩 거부</option>
+        <option value="noRecord" {% if filter == "noRecord" %} selected {% endif %}>기록 없음</option>
+    </select> 
+</form>
+
+<table  style="font-size:11pt" class="table table-striped">
+    <thead>  <!--   머리글   -->
+    <tr>
+      <th scope="col">이름</th>
+      <th scope="col">날짜</th>
+      <th scope="col">상태</th>
+    </tr>
+    </thead>
+
+    <tbody>  <!-- 내용  -->
+
+
+    {% for data in datas %}
+
+    
+    <tr>
+        <td><a class="nav-link" href="{% url "record:dashboardForm" data.id %}?filter={{filter}}">
+            {{ data.petId.name }}</a></td>
+        
+        <td><a class="nav-link" href="{% url "record:dashboardForm" data.id %}?filter={{filter}}">
+            {{ data.date|date:'y.m.d' }}</a></td>
+    
+        <td><a class="nav-link" href="{% url "record:dashboardForm" data.id %}?filter={{filter}}">
+            {{ data.state }}</a></td>
+    </tr>
+    
+
+    {% empty %}
+    <h1>No records yet...</h1>
+
+    {% endfor %}    
+
+    </tbody>
+
+  </table>
+
+
+  <script th:inline="javascript">
+  
+    var searchForm = $("#headerForm");
+  
+    function submitForm() {
+      searchForm.submit();
+    }
+  
+  </script>
+
+{% endblock %}
