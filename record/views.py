@@ -694,3 +694,57 @@ class DashboardFormView(LoginRequiredMixin, UpdateView):
     #     )
 
     #     return context
+
+
+# 대시보드 통합 등록 페이지
+class DashboardTotalFormView(LoginRequiredMixin, ListView):
+    model = models.Dashboard
+    template_name = 'record/dashboardTotalForm.html'
+
+    # 유저의 애완동물 목록 받아오기
+    def get_dashboard_list(self) :
+        dataList = models.Dashboard.objects.filter(userID=self.request.user)
+
+        return dataList
+
+    # 추가로 전달할 파라미터 지정
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["dataList"] = self.get_dashboard_list()
+
+        return context
+
+    # 포스트 요청 처리
+    def post(self, request, *args, **kwargs):
+
+        # 체크된 체크박스의 pet.id들을 가져옴
+        ids = request.POST.getlist("ids")
+        print("ids")
+        print(ids)
+
+        states = request.POST.getlist("states")
+        print("states")
+        print(states)
+
+        notes = request.POST.getlist("notes")
+        print("notes")
+        print(notes)
+
+        date = request.POST.get("date")
+        print("date")
+        print(date)
+
+        # # 체크한 애완동물 추가
+        for id, state, note in zip(ids, states, notes):
+
+            models.Dashboard.objects.filter(id=id).update(date=date, state=state, note=note)
+
+        # # 체크 안한 애완동물 삭제
+        # for old in oldJoinedList:
+        #     if str(old) not in checked_pets:
+        #         models.Dashboard.objects.filter(petId=old).delete()
+                
+            
+
+        return redirect("record:dashboard")

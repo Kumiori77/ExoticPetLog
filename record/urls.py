@@ -25,6 +25,7 @@ urlpatterns = [
     path("dashboard", views.DashboardView.as_view(), name="dashboard"),
     path("dashboardPetList", views.DashboardPetListView.as_view(), name="dashboardPetList"),
     path("dashboardForm/<int:pk>/", views.DashboardFormView.as_view(), name="dashboardForm"),
+    path("dashboardTotalForm", views.DashboardTotalFormView.as_view(), name="dashboardTotalForm"),
     # 메포해서 유저가 업로드 한 파일을 처리하기 위해 추가
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root" : settings.MEDIA_ROOT})
 ]

@@ -28,6 +28,7 @@ class Dashboard(models.Model):
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
     petId = models.ForeignKey(Pet, on_delete=models.CASCADE)
     date = models.DateField("date published")
+    note = models.CharField(null=True, blank=True, max_length=100)
 
     class Type(models.TextChoices):
         FEED = "피딩", "피딩"

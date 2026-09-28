@@ -1,0 +1,38 @@
+{% extends 'layout.html' %} {% block content %} <br /><br />
+<div class="text-center">
+  <h1>애완동물 관리 명단</h1>
+  <br /><br /><br />
+  <form method="post">
+    {% csrf_token %}
+
+    <div id="petForm" style="font-size: 19px; text-align: left;">
+      <input type="date" name="date" value="{% now 'Y-m-d' %}"><br><br>
+      {% for data in dataList %} 
+      
+        
+      <h5>{{ data.petId.name }}</h5>
+        
+      <input type="hidden" name="ids" value="{{ data.id }}">
+
+        <select name="states">
+            <option value="피딩" {% if data.state == "피딩" %}selected{% endif %}>피딩</option>
+            <option value="피딩 거부" {% if data.state == "피딩 거부" %}selected{% endif %}>피딩 거부</option>
+            <option value="피딩 대기" {% if data.state == "피딩 대기" %}selected{% endif %}>피딩 대기</option>
+            <option value="기록 없음" {% if data.state == "기록 없음" %}selected{% endif %}>기록 없음</option>
+        </select>
+        <br>
+        <!-- 텍스트 -->
+        <input type="text" name="notes" placeholder="비고">
+        </h4>
+        <br><br>
+
+      {% empty %} No pet.. {% endfor %}
+    </div>
+    <br />
+    <button class="btn btn-secondary" style="width: 150px">등록</button>
+
+  </form>
+</div>
+<br><br><br>
+
+{% endblock %}

@@ -48,11 +48,12 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = models.Dashboard
 
-        fields = ["date", "state"]
+        fields = ["date", "state", "note"]
 
         labels = {
             "date":"날짜",
             "state":"상태",
+            "note":"비고"
         }
 
         label_suffix = ''  # 콜론(:) 제외
