@@ -720,31 +720,19 @@ class DashboardTotalFormView(LoginRequiredMixin, ListView):
 
         # 체크된 체크박스의 pet.id들을 가져옴
         ids = request.POST.getlist("ids")
-        print("ids")
-        print(ids)
-
         states = request.POST.getlist("states")
-        print("states")
-        print(states)
-
         notes = request.POST.getlist("notes")
-        print("notes")
-        print(notes)
-
         date = request.POST.get("date")
-        print("date")
-        print(date)
 
-        # # 체크한 애완동물 추가
+        # 체크한 애완동물 추가
         for id, state, note in zip(ids, states, notes):
 
-            models.Dashboard.objects.filter(id=id).update(date=date, state=state, note=note)
+            # 변경사항이 없다면 저장 안함 (날짜 안바뀌도돍)
+            old = models.Dashboard.objects.get(id=id)   
+            if old.note == note and old.state == state:
+                continue
 
-        # # 체크 안한 애완동물 삭제
-        # for old in oldJoinedList:
-        #     if str(old) not in checked_pets:
-        #         models.Dashboard.objects.filter(petId=old).delete()
-                
+            models.Dashboard.objects.filter(id=id).update(date=date, state=state, note=note)
             
 
         return redirect("record:dashboard")
